@@ -1,5 +1,5 @@
 <p align="center">
-<img src="images/mngr-logo.png" width="312" height="118" style="text-align: center" />
+<img src="images/mngr-logo.png" width="208" height="79" style="text-align: center" />
 </p>
 
 ### A minimal C++ library for system management, oriented towards simplicity.
