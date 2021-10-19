@@ -9,10 +9,12 @@
 ```c++
 #include "mngr.hpp"
 
+using namespace mngr;
+
 int main()
 {
 	// Simple mngr "Hello, World!" program
-	mngr::create_file("Hello.txt");
-	mngr::add_to_file("Hello.txt", "Hello, World!");
+	create_file("Hello.txt");
+	add_to_file("Hello.txt", "Hello, World!");
 }
 ```
