@@ -1,4 +1,4 @@
-<img src="images/mngr-logo.png" width="468" height="186" />
+<img src="images/mngr-logo.png" width="312" height="118" style="text-align: center" />
 
 ### A minimal C++ library for system management, oriented towards simplicity.
 
