@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-<h3 align="center"> A minimal C++ library for system management, oriented towards simplicity. </h3>
+<h3 align="center"> A minimal C++ library for system utility, oriented towards simplicity. </h3>
 </p>
 
 <br />
@@ -24,3 +24,9 @@ int main()
 	add_to_file("Hello.txt", "Hello, World!");
 }
 ```
+
+Just **one simple header file** (everything is self-contained within it) that you have to include, and you have access to a quantity of useful data and methods that frees you of having to use complex tokens such as `oftsream`, `data()`, etc. 
+
+This library was created not only for beginners, who may find some C++ concepts difficult and time-consuming, but also for advanced user/professionals who do not wish to waste their time writing tiresome utility functions.
+
+The current methods included in `mngr` are the following:
