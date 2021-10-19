@@ -2,7 +2,11 @@
 <img src="images/mngr-logo.png" width="208" height="79" style="text-align: center" />
 </p>
 
-### A minimal C++ library for system management, oriented towards simplicity.
+<p align="center">
+<h3 align="center"> A minimal C++ library for system management, oriented towards simplicity. </h3>
+</p>
+
+<br />
 
 `mngr` is a minimal C++ library for various aspects of system management, including, for example, file management. mngr is oriented towards peformance and simplicity. 
 
