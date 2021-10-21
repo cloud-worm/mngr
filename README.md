@@ -29,4 +29,10 @@ Just **one simple header file** (everything is self-contained within it) that yo
 
 This library was created not only for beginners, who may find some C++ concepts difficult and time-consuming, but also for advanced user/professionals who do not wish to waste their time writing tiresome utility functions.
 
-The current methods included in `mngr` are the following:
+<br />
+
+### Why use `nmngr`, exactly?
+
+`mngr` is different from other C++ libraries because its aim is to be as explicit as possible for the user, in such a way that people who use it do not even need to to look at any documentation when writing: the mere names of the different functions are enough to know what code to write.
+
+This means that `mngr` is heavily based on methods and functions, with little to no templates. Each function serves *one* purpose; for example, you cannot create a directory with the `create_file()` function, and you cannot create a file with the `create_folder()` function.
