@@ -82,8 +82,8 @@ bool folder_exists(const string &_name);
 
 // Creates a file.
 void create_file(const string &_name, 
-		     const string &content = "", 
-		     bool replace = false);
+		 const string &content = "", 
+		 bool replace = false);
 		     
 // Deletes a file.
 void delete_file(const string &_name);
