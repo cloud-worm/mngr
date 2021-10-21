@@ -30,7 +30,7 @@ Just **one simple header file** (everything is self-contained within it) that yo
 
 This library was created not only for beginners, who may find some C++ concepts difficult and time-consuming, but also for advanced user/professionals who do not wish to waste their time writing tiresome utility functions.
 
-<br />
+<br /><br />
 
 ### Why use `mngr`, exactly?
 
@@ -38,7 +38,7 @@ This library was created not only for beginners, who may find some C++ concepts 
 
 This means that `mngr` is heavily based on methods and functions, with little to no templates. Each function serves *one* purpose; for example, you cannot create a directory with the `create_file()` function, and you cannot create a file with the `create_folder()` function.
 
-<br />
+<br /><br />
 
 ### How do you use `mngr`?
 
