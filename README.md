@@ -1,4 +1,5 @@
 
+
 <p align="center">
 <img src="images/mngr-logo.png" width="208" height="79" style="text-align: center" />
 </p>
@@ -66,3 +67,36 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -lstdc++fs" )
 ```
 - You could also use `target_link_libraries({PROJECT_NAME} <filesystem lib>)`, replacing the last parameter by the location of your C++ standard filesystem library.
 
+<br /><br />
+
+### What you can do with `mngr`
+
+```c++
+// FILE MANAGEMENT
+
+// Checks if a specific file exists.
+bool file_exists(const string &_name);
+
+// Checks if a specific directory exists.
+bool folder_exists(const string &_name);
+
+// Creates a file.
+void create_file(const string &_name, 
+		     const string &content = "", 
+		     bool replace = false);
+		     
+// Deletes a file.
+void delete_file(const string &_name);
+
+// Appends content to the end of a file.
+void add_to_file(const string &_name, const string &content);
+
+// Gives a new path to a file (can be used for renaming the file, evidently).
+void new_path(const string &_name, const string &newpath);
+
+// Deletes a folder.
+void delete_folder(const string &_name);
+
+// Creates a folder.
+void create_folder(const string &_name);
+```
