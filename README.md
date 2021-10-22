@@ -69,6 +69,35 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -lstdc++fs" )
 
 <br /><br />
 
+### Examples of programs with `mngr`
+
+Print and wait
+```c++
+#include "mngr/mngr.hpp"
+
+int main(int argc, char const *argv[])
+{
+	mngr::print_and_wait("Hello, World!", 2s);
+	mngr::print("Bye!");
+	
+	return 0;
+}
+```
+
+Check file existance
+```c++
+#include "mngr/mngr.hpp"
+
+int main(int argc, char const *argv[])
+{
+	mngr::print( mngr::file_exists("./foo/bar.txt") );
+	
+	return 0;
+}
+```
+
+<br /><br />
+
 ### What you can do with `mngr`
 
 ```c++
