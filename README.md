@@ -47,7 +47,7 @@ This means that `mngr` is heavily based on methods and functions, with little to
 
 ### How do you use `mngr`?
 
-`mngr` does not work like a usual C++ library. Instead, you must add `mngr/mngr.hpp` (a self-contained header file) within a project of yours and include it locally.
+`mngr` is a single-header library, so you must not install it; instead, you must add `mngr/mngr.hpp` (a self-contained header file) within a project of yours and include it locally.
 
 1. Start by donwloading this repository as .zip, or run 
 ```bash
