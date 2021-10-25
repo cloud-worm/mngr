@@ -5,25 +5,29 @@
 </p>
 
 <p align="center">
-<h3 align="center"> A minimal C++ library for stanard utility, oriented towards simplicity. </h3>
+<h3 align="center"> A minimal C++ singe-header library for utility, oriented towards simplicity. </h3>
 </p>
 
 <br />
 
-`mngr` is a minimal C++ library for various aspects of system management & standard library-like utilities, including, for example, file management. `mngr` is oriented towards performance and simplicity. 
+`mngr` is a minimal, single-header C++ library for various aspects of system management & standard library-like utilities, including, for example, file management. `mngr` is oriented towards performance and simplicity. 
 
 Instead of explaining the theory, let us observe a practical example to see just how `mngr` works:
 
 ```c++
 #include "mngr.hpp"
 
-using namespace mngr;
-
 int main()
 {
-	// Simple mngr "Hello, World!" program
-	create_file("Hello.txt");
-	add_to_file("Hello.txt", "Hello, World!");
+	mngr::print_and_wait("Hello, World!", 1s);
+	
+	mngr::print("Creating file Hello.txt:");
+	
+	mngr::create_file("Hello.txt");
+	mngr::add_to_file("Hello.txt", "Hello, World!");
+	mngr::wait(300ms);
+	
+	mngr::print("Hello.txt created!");
 }
 ```
 
