@@ -1,20 +1,66 @@
+/*
+
+		 [*𝗺𝗻𝗴𝗿;]
+
+	     « Python in C++ » *
+
+   A small, simplicity-oriented utility
+   library. Aims to be as explicit as
+   possible - each method serves one sole
+   purpose that is obvious.
+
+   Basically, the philosophy is that you
+   must not be using complex data types
+   and templates as instead, exclusively
+   call functions that serve a single
+   purpose.
+
+   Writing this text is probably pointless,
+   since I'm probably the only one that's
+   ever going to use this library. But still.
+
+   * I call this "Python in C++" because
+   the 'method-driven' approach to C++ that
+   this library uses (as I like to call it)
+   ressembles Python, slightly.
+
+	Copyright (c) 2021  Cloud Worm
+*/
+
+// Guards
+#ifndef MNGR
+#define MNGR
+
+// Make sure it is exclusively included once!
 #pragma once
 
-#include <stdio.h>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <chrono>
-#include <thread>
+#include <ios>	     // For streamsize type
+#include <limits>	     // numeric_limits<...>
+#include <fstream>     // File manipulation
+#include <iostream>    // For input(), print() and related
+#include <string>	     // Strings
+#include <sys/types.h> // Not sure I'm actually using this
+#include <sys/stat.h>  // For file_exists()
+#include <numbers>     // Gives user access to constants: pi, etc
+#include <chrono>	     // Time, etc
+#include <thread>	     // Also time, I guess
+//#include <unistd.h>  // I don't remember
+//#include <stdio.h>   // Probably useful? Not sure.
+// #include <cstdarg> // For va_<...>
+//#include <unistd.h>  // I don't remember
+
+/*
+At some point I had problems with <filesystem>.
+I am a naïve fool, and I thought including the following
+four was going to help.
+
 #include <bits/fs_fwd.h>
 #include <bits/fs_path.h>
 #include <bits/fs_dir.h>
 #include <bits/fs_ops.h>
+*/
 
-// Support for C++11 and 17 (and 20, evidently)
+// Support for C++11 up to 17 (and 20, evidently)
 #ifndef __has_include
 static_assert(false, "__has_include not supported");
 #else
@@ -27,11 +73,16 @@ namespace fs = std::experimental::filesystem;
 #endif
 #endif
 
+// Although this is considered unreasonable, we don't want to write
+// namespace scopes each time ┐(´ー｀)┌
+using namespace std::this_thread;
+using namespace std::chrono_literals;
+using std::chrono::system_clock;
 using namespace std;
 
-// mngr is a minimal C++ library oriented towards simplicity.
-// It allows incredibly easy file management, for example, including voids such as delete_file(), or create_file().
-// It is self contained within one header file.
+// Namespace definition.
+// Oh boy, is this exciting. It makes me feel like a pro.
+
 namespace mngr
 {
 	// FILE MANAGEMENT
@@ -149,4 +200,100 @@ namespace mngr
 	{
 		fs::create_directories(_name);
 	}
+
+	// TIME MANAGEMENT
+
+	// Copyright (c) 2008-2020 Free Software Foundation, Inc., for this function (slightly modified)
+
+	// Sleep for some time (uses time literal suffixes).
+	template <typename _Rep, typename _Period>
+	void wait(const chrono::duration<_Rep, _Period> &sleeptime = 1s)
+	{
+		if (sleeptime <= sleeptime.zero())
+			return;
+		auto _seconds = chrono::duration_cast<chrono::seconds>(sleeptime);
+		auto _nanos = chrono::duration_cast<chrono::nanoseconds>(sleeptime - _seconds);
+
+#ifdef _GLIBCXX_USE_NANOSLEEP
+		__gthread_time_t __ts =
+		    {
+			  static_cast<std::time_t>(_seconds.count()),
+			  static_cast<long>(_nanos.count())};
+		while (::nanosleep(&__ts, &__ts) == -1 && errno == EINTR)
+		{
+		}
+#else
+		__sleep_for(_seconds, _nanos);
+#endif
+	}
+
+	// CONSOLE
+
+	// Prints content to the standard output, adds a new line and flushes the buffer.
+	void print(const string &content = "")
+	{
+		cout << content << endl;
+	}
+
+	// Prints content, then waits the given time (uses time literal suffixes).
+	template <typename _Rep, typename _Period>
+	void print_and_wait(const string &content = "", const chrono::duration<_Rep, _Period> &sleeptime = 1s)
+	{
+		print(content);
+		wait(sleeptime);
+	}
+
+	// Waits the given time (uses time literal suffixes), then prints content.
+	template <typename _Rep, typename _Period>
+	void wait_and_print(const string &content = "", const chrono::duration<_Rep, _Period> &sleeptime = 1s)
+	{
+		print(content);
+		wait(sleeptime);
+	}
+
+	// Receives user input from the standard input.
+	// By default, the input is a string, and you must specify the type, as a template parameter, if it isn't.
+	template <typename T = string>
+	T input(const string &prompt)
+	{
+		T _input;
+
+		cout << prompt;
+		cin >> _input;
+
+		return _input;
+	}
+
+	// Convert any number into a string.
+	string make_string(unsigned input_val)
+	{
+		return to_string(input_val);
+	}
+
+	// Function allowing the user to press any key to continue.
+	void any_key(const string &message = "")
+	{
+		// cin.clear();
+		cin.ignore(std::numeric_limits<std::streamsize>::max());
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		// cin.get();
+		getchar();
+
+		/*
+
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		getchar();
+*/
+
+		/*
+		cout << endl // endl is necessary as the buffer needs to be cleaned
+		<< message;
+		*/
+	}
 }
+
+// End guards
+#endif
+
+// End of mngr.hpp
