@@ -1,6 +1,6 @@
 /*
 
-		 [*𝗺𝗻𝗴𝗿;]
+		    [*𝗺𝗻𝗴𝗿;]
 
 	     « Python in C++ » *
 
@@ -44,10 +44,10 @@
 #include <numbers>     // Gives user access to constants: pi, etc
 #include <chrono>	     // Time, etc
 #include <thread>	     // Also time, I guess
-//#include <unistd.h>  // I don't remember
-//#include <stdio.h>   // Probably useful? Not sure.
-// #include <cstdarg> // For va_<...>
-//#include <unistd.h>  // I don't remember
+//#include <unistd.h>    // I don't remember
+//#include <stdio.h>     // Probably useful? Not sure.
+//#include <cstdarg>    // For va_<...>
+//#include <unistd.h>    // I don't remember
 
 /*
 At some point I had problems with <filesystem>.
@@ -81,11 +81,37 @@ using std::chrono::system_clock;
 using namespace std;
 
 // Namespace definition.
-// Oh boy, is this exciting. It makes me feel like a pro.
 
 namespace mngr
 {
 	// FILE MANAGEMENT
+
+	bool is_file_empty(const string &_name)
+	{
+		std::ifstream pFile(_name.c_str());
+
+		return pFile.peek() == std::ifstream::traits_type::eof();
+	}
+
+	int count_file_lines(const string &_name)
+	{
+
+		string s;
+		int sTotal;
+		ifstream _in;
+
+		_in.open(_name.c_str());
+
+		while (!_in.eof())
+		{
+			getline(_in, s);
+			sTotal++;
+		}
+
+		_in.close();
+
+		return sTotal;
+	}
 
 	// Checks if a specific file exists.
 	bool file_exists(const string &_name)
@@ -97,9 +123,9 @@ namespace mngr
 	// Checks if a specific directory exists.
 	bool folder_exists(const string &_name)
 	{
-		struct stat info;
+		struct stat buffer;
 
-		int statRC = stat(_name.c_str(), &info);
+		int statRC = stat(_name.c_str(), &buffer);
 		if (statRC != 0)
 		{
 			if (errno == ENOENT)
@@ -113,11 +139,11 @@ namespace mngr
 			return -1;
 		}
 
-		return (info.st_mode & S_IFDIR) ? 1 : 0;
+		return (buffer.st_mode & S_IFDIR) ? 1 : 0;
 	}
 
 	// Creates a file.
-	void create_file(const string &_name, const string &content = "", bool replace = false)
+	void create_file(const string &_name, bool replace = false)
 	{
 		if (!replace && file_exists(_name))
 		{
@@ -140,8 +166,6 @@ namespace mngr
 			// make sure write fails with exception if something is wrong
 			_outfile.exceptions(_outfile.exceptions() | ios::failbit | ifstream::badbit);
 
-			// Optional content. Unrecommended.
-			_outfile << content << endl;
 			_outfile.close();
 		}
 	}
@@ -151,6 +175,82 @@ namespace mngr
 	{
 		// Self explanative. Convert std::string to const char *
 		remove(_name.c_str());
+	}
+
+	// Clears the content of a file.
+	void clear_file(const string &_name)
+	{
+		std::ofstream _outfile;
+		_outfile.open(_name, std::ofstream::out | std::ofstream::trunc);
+		_outfile.close();
+	}
+
+	// Gives a new path to a file (can be used for renaming the file, evidently).
+	void new_path(const string &_name, const string &newpath)
+	{
+		// Convert parameters from std::string to const char *
+		rename(_name.c_str(), newpath.c_str());
+	}
+
+	// Removes specific line of a file.
+	void remove_line(const string &_name, int num_of_lines = -12)
+	{
+		if (num_of_lines == -12)
+		{
+			num_of_lines = count_file_lines(_name);
+		}
+		else if (num_of_lines <= 0 && num_of_lines > count_file_lines(_name))
+		{
+			cerr << "You did not input a valid line number!"
+			     << endl;
+		}
+
+		if (!file_exists(_name))
+		{
+			cerr << "Attempted to write to file \"" << _name << "\" but it does not exist. \
+			        \nmngr::create_file() can be called to create it."
+			     << endl;
+		}
+		else
+		{
+			/*
+			std::ifstream in(_name);
+			std::ofstream out(_name + ".tmp");
+			// some error checking...
+			std::string line;
+			std::getline(in, line);
+			for (std::string tmp; std::getline(in, tmp); line.swap(tmp))
+			{
+				out << line << '\n';
+			}
+
+			// std::string temp_str = _name + ".tmp";
+			// const char *_tempfile = temp_str.c_str();
+
+			cout << _name + ".tmp";
+
+			delete_file(_name + ".tmp");
+			*/
+
+			ifstream fin(_name.c_str());
+			ofstream fout;
+			fout.open("temp.txt", ios::out);
+
+			char ch;
+			int line = 1;
+			while (fin.get(ch))
+			{
+				if (ch == '\n')
+					line++;
+
+				if (line != num_of_lines) // content not to be deleted
+					fout << ch;
+			}
+			fout.close();
+			fin.close();
+			remove(_name.c_str());
+			rename("temp.txt", _name.c_str());
+		}
 	}
 
 	// Appends content to the end of a file.
@@ -165,6 +265,13 @@ namespace mngr
 		}
 		else
 		{
+			bool rm_lastl = false;
+
+			if (is_file_empty(_name))
+			{
+				rm_lastl = true;
+			}
+
 			// Initialise file
 			ofstream _outfile;
 			_outfile.open(_name, ios::out | ios::app);
@@ -178,15 +285,14 @@ namespace mngr
 
 			// Append
 			_outfile << content << std::endl;
-			_outfile.close();
-		}
-	}
 
-	// Gives a new path to a file (can be used for renaming the file, evidently).
-	void new_path(const string &_name, const string &newpath)
-	{
-		// Convert parameters from std::string to const char *
-		rename(_name.c_str(), newpath.c_str());
+			_outfile.close();
+
+			if (rm_lastl = true)
+			{
+				remove_line(_name, count_file_lines(_name));
+			}
+		}
 	}
 
 	// Deletes a folder.
@@ -270,27 +376,18 @@ namespace mngr
 		return to_string(input_val);
 	}
 
-	// Function allowing the user to press any key to continue.
-	void any_key(const string &message = "")
-	{
-		// cin.clear();
-		cin.ignore(std::numeric_limits<std::streamsize>::max());
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		// cin.get();
-		getchar();
+	/*
+		// Function allowing the user to press any key to continue.
+		void any_key(const string &message = "")
+		{
+			// cin.clear();
+			cin.ignore(std::numeric_limits<std::streamsize>::max());
+			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			// cin.get();
+			getchar();
 
-		/*
 
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-		getchar();
-*/
-
-		/*
-		cout << endl // endl is necessary as the buffer needs to be cleaned
-		<< message;
-		*/
-	}
+		} */
 }
 
 // End guards
